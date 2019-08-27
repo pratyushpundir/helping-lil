@@ -1,12 +1,10 @@
 //Our JavaScript code starts here:
 
-/*
-
+/** 
 Use the following numbers to represent choices, similar to the previous lab:
-
-	0: Rock
-	1: Paper
-	2: Scissors
+0: Rock
+1: Paper
+2: Scissors
 
 This time, you will have to edit the images in the html part manually to call 
 the play function with the appropriate argument (Hint: OnClick)
@@ -31,26 +29,26 @@ images on the board, and set the result text based on the arguments it was given
 */
 
 var CPU;
+
 const choiceDictionary = [
     'rock',
     'paper',
     'scissors'
 ]
 
+/*
+    This function will take in 1 argument: player's choice.
+
+    You will call this function from the OnClick event of the
+    Rock, Paper and Scissors images. It should take in the players
+    choice as argument and then play out the game using the rest of
+    the functions defined below.
+
+    You should generate a CPU choice inside this function, then
+    call the appropriate functions to calculate the result of the game.
+*/
 function play(playerChoice) // playerChoice is a parameter
 {
-    /*
-    	This function will take in 1 argument: player's choice.
-    	
-    	You will call this function from the OnClick event of the
-    	Rock, Paper and Scissors images. It should take in the players 
-    	choice as argument and then play out the game using the rest of 
-    	the functions defined below.
-    	
-    	You should generate a CPU choice inside this function, then 
-    	call the appropriate functions to calculate the result of the game.
-    */
-
     document.getElementById("result").innerText = "CPU, pick your weapon!";
 
     cpuChoice = generateRandomNumber(0, 2);
@@ -59,30 +57,26 @@ function play(playerChoice) // playerChoice is a parameter
 }
 
 
+/*
+    This function will take in 2 arguments: minimum number and
+    maximum number it can generate.
 
+    In this function you will generate a random number between
+    these minimum and maximum numbers (both inclusive) and return
+    it. You are going to use this function to determine the cpu choice.
+*/
 function generateRandomNumber(min, max) {
-    /*
-    	This function will take in 2 arguments: minimum number and 
-    	maximum number it can generate.
-    	
-    	In this function you will generate a random number between 
-    	these minimum and maximum numbers (both inclusive) and return 
-    	it. You are going to use this function to determine the cpu choice.
-    */
-
     return Math.floor(Math.random() * (max + 1)) + min;
 }
 
+/*
+    This function will take in 2 arguments: players choice and cpus choice.
 
+    In this function, you are going to use conditional statements to determine
+    who won the game by comparing the choices for both players, and show the play
+    and the result on the board by calling the appropriate function
+*/
 function calculateResult(player, cpu) {
-    /*
-    	This function will take in 2 arguments: players choice and cpus choice.
-    	
-    	In this function, you are going to use conditional statements to determine
-    	who won the game by comparing the choices for both players, and show the play 
-    	and the result on the board by calling the appropriate function
-    */
-
     results = "";
     if (player === cpu) {
         resultText = "draw";
@@ -105,47 +99,72 @@ function calculateResult(player, cpu) {
     }
 
     showPlayOnBoard(player, cpu, resultText)
+
     logActivity(player, cpu, resultText)
 }
 
+/**
+ * Logs what happened in any given round. Appends HTML on:
+ * (1) Player Choice
+ * (2) CPU Choice
+ * (3) Round Result
+ * 
+ * @param {integer} playerChoice A number b/w 0-2 representing the player's choice.
+ * @param {integer} cpuChoice A number b/w 0-2 representing the CPU's choice.
+ * @param {string} resultText Text describing who won.
+ */
 function logActivity (playerChoice, cpuChoice, resultText) {
+
     var activityLog = document.getElementById("activity-log"),
-        userLog = document.createTextNode(`Player selected "${choiceDictionary[playerChoice]}".`),
+
+        // Text for Player's Choice
+        playerLog = document.createTextNode(`Player selected "${choiceDictionary[playerChoice]}".`),
+        
+        // Text for CPU's Choice
         cpuLog = document.createTextNode(`CPU selected "${choiceDictionary[cpuChoice]}".`),
+        
+        // Text for who won
         resultLog = document.createTextNode(`Result: "${resultText}"`),
+        
+        // Just a way to separate each attept from another
         logSeperator = document.createTextNode(`------------------------------------`),
+
+        // Add a timestamp
+        timestamp = document.createTextNode(`Played at: ${getTime()}`),
+        
+        // Put all of these logs/sentences in an array/list
         consolidatedLog = [
-            userLog,
+            logSeperator,
+            playerLog,
             cpuLog,
             resultLog,
-            logSeperator
-        ], 
+            timestamp
+        ],
         node;
 
-        
+    // For each of the sentences/logs in the array/list, print a <li></li> tag and 
+    // set its text as the log/sentence itself
     consolidatedLog.forEach(function (logItem) {
         node = document.createElement("LI");
         node.appendChild(logItem);
-        activityLog.appendChild(node);
+        activityLog.prepend(node);
     });
 }
 
+/*
+    This function will take in 3 arguments: players choice, cpus choice and the
+    result to display on the board.
 
+    When this function is called, you already have played out the game and determined
+    who won. You just need to show the result on the board now, along with the choice
+    both the player and the cpu made.
+
+    For the player and cpu images, you will need to use a conditional statement each
+    and set the source of the images on the board appropriately. For the result text,
+    you should use the resultText argument.
+
+*/
 function showPlayOnBoard(playerChoice, cpuChoice, result) {
-
-    /*
-    	This function will take in 3 arguments: players choice, cpus choice and the 
-    	result to display on the board.
-    	
-    	When this function is called, you already have played out the game and determined
-    	who won. You just need to show the result on the board now, along with the choice
-    	both the player and the cpu made.
-    	
-    	For the player and cpu images, you will need to use a conditional statement each 
-    	and set the source of the images on the board appropriately. For the result text,
-    	you should use the resultText argument.
-    	
-    */
 
     if (playerChoice === 0) {
         document.getElementById("playerChoice").setAttribute("src", "rock.png"); // change based on playerChoice
@@ -165,4 +184,25 @@ function showPlayOnBoard(playerChoice, cpuChoice, result) {
 
     document.getElementById("result").innerText = result;
 
+}
+
+function getDateTime() {
+    var today = new Date();
+    var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var dateTime = date + ' ' + time;
+
+    return dateTime;
+}
+function getDate() {
+    var today = new Date();
+    var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+
+    return date;
+}
+function getTime() {
+    var today = new Date();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+
+    return time;
 }
