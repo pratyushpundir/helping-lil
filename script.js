@@ -34,7 +34,13 @@ const choiceDictionary = [
     'rock',
     'paper',
     'scissors'
-]
+];
+
+const maxRounds = 3;
+
+var roundResults = [];
+
+var activityLog = document.getElementById("activity-log");
 
 /*
     This function will take in 1 argument: player's choice.
@@ -80,21 +86,28 @@ function calculateResult(player, cpu) {
     results = "";
     if (player === cpu) {
         resultText = "draw";
+        recordWinner("draw");
     } else {
 
         if (player === 0 && cpu === 2) { // rock beats scissors 
             resultText = "player wins"
+            recordWinner("player");
         } else if (player === 0 && cpu === 1) { // rock beats scissors 
             resultText = "cpus wins"
+            recordWinner("cpu");
         } else if (player === 1 && cpu === 0) { // paper beats rock
             resultText = "player wins"
+            recordWinner("player");
         } else if (player === 1 && cpu === 2) { // scissors beats paper}
             resultText = "cpu wins"
+            recordWinner("cpu");
         } else if (player === 2 && cpu === 1) {
             resultText = "player wins"
+            recordWinner("player");
         }
         if (player === 2 && cpu === 0) { // rock beats scissors {
             resultText = "cpu wins"
+            recordWinner("cpu");
         }
     }
 
@@ -115,10 +128,8 @@ function calculateResult(player, cpu) {
  */
 function logActivity (playerChoice, cpuChoice, resultText) {
 
-    var activityLog = document.getElementById("activity-log"),
-
-        // Text for Player's Choice
-        playerLog = document.createTextNode(`Player selected "${choiceDictionary[playerChoice]}".`),
+    // Text for Player's Choice
+    var playerLog = document.createTextNode(`Player selected "${choiceDictionary[playerChoice]}".`),
         
         // Text for CPU's Choice
         cpuLog = document.createTextNode(`CPU selected "${choiceDictionary[cpuChoice]}".`),
@@ -132,13 +143,17 @@ function logActivity (playerChoice, cpuChoice, resultText) {
         // Add a timestamp
         timestamp = document.createTextNode(`Played at: ${getTime()}`),
         
+        // Add some Rounds related info
+        roundInfo = document.createTextNode(`Round #: ${roundResults.length}`),
+        
         // Put all of these logs/sentences in an array/list
         consolidatedLog = [
             logSeperator,
+            resultLog,
             playerLog,
             cpuLog,
-            resultLog,
-            timestamp
+            timestamp,
+            roundInfo
         ],
         node;
 
@@ -186,6 +201,51 @@ function showPlayOnBoard(playerChoice, cpuChoice, result) {
 
 }
 
+function recordWinner(winner) {
+    if (roundResults.length < maxRounds) {
+        roundResults.push(winner);
+        console.log('round recorded');
+    } else if (roundResults.length == maxRounds) {
+        // Max rounds reached. Lets see who won.
+        getOverallWinner();
+
+        // Reset rounds.
+        roundResults = [];
+    }
+
+    console.log(roundResults)
+}
+
+function getOverallWinner() {
+    var playerScore = 0,
+        cpuScore = 0,
+        winner,
+        resultsMessage;
+
+    roundResults.forEach(function (roundResult) {
+        if (roundResult == 'player') {
+            playerScore++;
+        } else if (roundResult == 'cpu') {
+            cpuScore++;
+        }
+    });
+
+    if (playerScore > cpuScore) {
+        winner = "player";
+        resultsMessage = `The best of ${maxRounds} winner is ${winner}! Congratulations!!`;
+    } else if (cpuScore > playerScore) {
+        winner = "cpu";
+        resultsMessage = `The best of ${maxRounds} winner is ${winner}! Better luck next time!!`
+    } else if (playerScore == cpuScore) {
+        winner = "draw";
+        resultsPage = `Its a draw! You scare us!!`
+    }
+
+    log(resultsMessage);
+
+    return winner;
+}
+
 function getDateTime() {
     var today = new Date();
     var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
@@ -205,4 +265,16 @@ function getTime() {
     var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
 
     return time;
+}
+
+function log(text) {
+    var node = document.createElement('LI'),
+        separator = document.createTextNode(`------------------------------------`);
+
+    node.appendChild(document.createTextNode(text));
+    activityLog.prepend(node);
+    
+    node = document.createElement('LI')
+    node.appendChild(separator);
+    activityLog.prepend(node);   
 }
