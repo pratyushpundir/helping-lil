@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Rock Paper Scissors</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+
+
+<body>
+    <h1 id="result">Player 1, pick your weapon!</h1>
+    <img src="rock.png" OnClick="play(0)">
+    <img src="paper.png" OnClick="play(1)">
+    <img src="scissors.png" OnClick="play(2)">
+    <br><br>
+
+    <div class="player">PLAYER</div>
+    <div class="player">CPU</div>
+
+    <br>
+
+    <img id="playerChoice" class="choiceImg" src="pick.png">
+    <img id="cpuChoice" class="choiceImg" src="pick.png">
+
+    <!-- NEW HTML -->
+    <div id="activity-log-container">
+        <h3>Activity Log</h3>
+        
+        <ul id="activity-log"></ul>
+    </div>
+
+    <!-- MOVED JS TO OWN FILE -->
+    <script src="script.js"></script>
+
+</body>
+
+</html>
